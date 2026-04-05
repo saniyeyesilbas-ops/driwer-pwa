@@ -120,10 +120,13 @@ export interface Profile {
 }
 
 export interface NewRequestData {
+  id: string;
   type: RequestType;
   plate: string;
   date: string;
   region: string;
   km: number;
   details: Record<string, any>;
+  status: "ACIK" | "KAPALI";
+  createdAt: string;
 }

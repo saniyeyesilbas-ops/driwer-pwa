@@ -8,6 +8,7 @@ import {
   FineRecord,
   FuelRecord,
   KmLog,
+  NewRequestData,
 } from "@/lib/types";
 
 export const mockVehicle: Vehicle = {
@@ -33,6 +34,31 @@ export const mockVehicle: Vehicle = {
   },
   criticalAlerts: ["Periyodik bakım süresi geçti"],
 };
+
+export const mockOpenRequests: NewRequestData[] = [
+  {
+    id: "req-1",
+    type: "BAKIM",
+    plate: "34 ABC 123",
+    date: "2026-04-10",
+    region: "İstanbul Avrupa",
+    km: 45230,
+    details: { maintenanceType: "Periyodik", note: "Periyodik bakım talebi" },
+    status: "ACIK",
+    createdAt: "2026-04-05",
+  },
+  {
+    id: "req-2",
+    type: "LASTIK",
+    plate: "34 ABC 123",
+    date: "2026-04-08",
+    region: "İstanbul Anadolu",
+    km: 45230,
+    details: { tireType: "Yaz", tireReason: "Mevsim" },
+    status: "ACIK",
+    createdAt: "2026-04-03",
+  },
+];
 
 export const mockNotifications: Notification[] = [
   {

@@ -1,15 +1,33 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Wrench, AlertCircle } from "lucide-react";
 import VehicleHeader from "@/components/VehicleHeader";
 import MetricCard from "@/components/MetricCard";
 import AlertBanner from "@/components/AlertBanner";
-import { mockVehicle } from "@/mock/mockData";
+import { mockVehicle, mockOpenRequests, requestTypes } from "@/mock/mockData";
 import { formatDateTr } from "@/lib/format";
+import { NewRequestData } from "@/lib/types";
+
+function getRequestIcon(type: string) {
+  switch (type) {
+    case "BAKIM":
+      return <Wrench className="w-5 h-5" />;
+    case "HASAR_KAZA":
+    case "ARIZA":
+      return <AlertCircle className="w-5 h-5" />;
+    default:
+      return <AlertCircle className="w-5 h-5" />;
+  }
+}
+
+function getRequestLabel(type: string) {
+  return requestTypes.find((rt) => rt.value === type)?.label || type;
+}
 
 export default function HomePage() {
   const vehicle = mockVehicle;
+  const openRequests = mockOpenRequests.filter((req) => req.status === "ACIK");
 
-  // Rental alan adları için güvenli fallback (TypeScript hatası için any cast)
+  // Rental alan adlari icin guvenli fallback (TypeScript hatasi icin any cast)
   const rental = vehicle.rental as any;
   const totalKm = rental?.totalKm ?? rental?.kmLimit ?? 0;
   const remainingKm = rental?.remainingKm ?? rental?.kmRemaining ?? 0;
@@ -34,10 +52,10 @@ export default function HomePage() {
         Yeni Talep
       </Link>
 
-      {/* Araç Bilgi Kartı */}
+      {/* Arac Bilgi Karti */}
       <VehicleHeader vehicle={vehicle} />
 
-      {/* Kiralık Araç KM Barı - sadece geçerli totalKm varsa göster */}
+      {/* Kiralik Arac KM Bari - sadece gecerli totalKm varsa goster */}
       {vehicle.rental && hasValidRental && (
         <div className="bg-white rounded-xl border border-gray-200 p-3 shadow-sm">
           <div className="flex justify-between items-center mb-2">
@@ -72,27 +90,61 @@ export default function HomePage() {
       {/* Metrikler Grid - 2x2 (her zaman 4 kutu) */}
       <div className="grid grid-cols-2 gap-3">
         <MetricCard
-          label="Güncel KM"
+          label="Guncel KM"
           value={vehicle.km.toLocaleString("tr-TR")}
           subtext={`Son: ${formatDateTr(vehicle.kmUpdatedAt)}`}
         />
         <MetricCard
-          label="Ort. Yakıt"
+          label="Ort. Yakit"
           value={vehicle.fuelAvgLPer100 ?? "—"}
           unit={vehicle.fuelAvgLPer100 ? "L/100km" : ""}
         />
         <MetricCard
-          label="Karbon Ayak İzi"
+          label="Karbon Ayak Izi"
           value={vehicle.carbonFootprintLevel ?? "—"}
         />
         <MetricCard
-          label="Sürüş Skoru"
+          label="Surus Skoru"
           value={vehicle.drivingScore ?? "—"}
           unit={vehicle.drivingScore ? "/100" : ""}
         />
       </div>
 
-      {/* Kritik Uyarılar */}
+      {/* Acik Talepler - 2x2 Gridin altinda */}
+      {openRequests.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-gray-900">Acik Taleplerim</h3>
+          <div className="grid grid-cols-1 gap-3">
+            {openRequests.map((request) => (
+              <div
+                key={request.id}
+                className="bg-white rounded-xl border border-warning-200 p-4 shadow-sm"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-warning-50 rounded-lg text-warning-600">
+                    {getRequestIcon(request.type)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-gray-900">
+                        {getRequestLabel(request.type)}
+                      </span>
+                      <span className="text-xs bg-warning-100 text-warning-700 px-2 py-1 rounded-full">
+                        Acik
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {request.region} • {formatDateTr(request.date)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Kritik Uyarilar */}
       {vehicle.criticalAlerts && vehicle.criticalAlerts.length > 0 && (
         <div className="space-y-2">
           {vehicle.criticalAlerts.map((alert, index) => (
