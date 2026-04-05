@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className="bg-gray-50 min-h-screen">
         <TopBar />
-        <main className="max-w-md mx-auto pb-20">{children}</main>
+        <main className="max-w-md sm:max-w-lg md:max-w-xl mx-auto pb-20">{children}</main>
         <BottomNav />
       </body>
     </html>
