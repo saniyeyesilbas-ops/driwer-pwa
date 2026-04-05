@@ -9,9 +9,10 @@ import { formatDateTr } from "@/lib/format";
 export default function HomePage() {
   const vehicle = mockVehicle;
 
-  // Rental alan adları için güvenli fallback
-  const totalKm = vehicle.rental?.totalKm ?? vehicle.rental?.kmLimit ?? 0;
-  const remainingKm = vehicle.rental?.remainingKm ?? vehicle.rental?.kmRemaining ?? 0;
+  // Rental alan adları için güvenli fallback (TypeScript hatası için any cast)
+  const rental = vehicle.rental as any;
+  const totalKm = rental?.totalKm ?? rental?.kmLimit ?? 0;
+  const remainingKm = rental?.remainingKm ?? rental?.kmRemaining ?? 0;
   const hasValidRental = totalKm > 0;
 
   const getRentalKmColor = () => {
