@@ -9,3 +9,10 @@ export function formatDateTr(isoDate: string): string {
     year: "numeric",
   });
 }
+export function formatDateTr(iso?: string) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("tr-TR");
+}
+``
