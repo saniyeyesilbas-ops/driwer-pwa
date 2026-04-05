@@ -27,3 +27,4 @@ npm run dev
 - [x] Profilde sözleşme özeti (kiralıksa) + adres ekleme var
 - [x] Tüm ekranlar mockData'dan besleniyor; gerçek API yok
 - [x] Türkçe metinler doğru (Aracım/Bildirimlerim/Geçmişim/Profil)
+
