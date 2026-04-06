@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, MapPin, Plus, Trash2, FileText, HelpCircle } from "lucide-react";
-import { mockProfile, mockVehicle } from "@/mock/mockData";
+import { Phone, MapPin, Plus, Trash2, FileText, HelpCircle, Upload, FileCheck } from "lucide-react";
+import { mockProfile, mockVehicle, cities } from "@/mock/mockData";
 import { Address } from "@/lib/types";
 
 export default function ProfilePage() {
@@ -14,26 +14,48 @@ export default function ProfilePage() {
     city: "",
     district: "",
   });
+  const [selectedCity, setSelectedCity] = useState("");
+
+  // Belge yükleme state
+  const [documents, setDocuments] = useState<{
+    sigorta: File | null;
+    ruhsat: File | null;
+  }>({
+    sigorta: null,
+    ruhsat: null,
+  });
+
+  const handleCityChange = (cityName: string) => {
+    setSelectedCity(cityName);
+    setNewAddress({ ...newAddress, city: cityName, district: "" });
+  };
 
   const handleAddAddress = () => {
-    if (!newAddress.title || !newAddress.fullAddress) return;
+    if (!newAddress.title || !newAddress.fullAddress || !newAddress.city || !newAddress.district) return;
 
     const address: Address = {
       id: `a${Date.now()}`,
       title: newAddress.title,
       fullAddress: newAddress.fullAddress,
-      city: newAddress.city || "İstanbul",
-      district: newAddress.district || "",
+      city: newAddress.city,
+      district: newAddress.district,
     };
 
     setAddresses([...addresses, address]);
     setNewAddress({ title: "", fullAddress: "", city: "", district: "" });
+    setSelectedCity("");
     setShowAddForm(false);
   };
 
   const handleDeleteAddress = (id: string) => {
     setAddresses(addresses.filter((a) => a.id !== id));
   };
+
+  const handleFileUpload = (type: "sigorta" | "ruhsat", file: File | null) => {
+    setDocuments({ ...documents, [type]: file });
+  };
+
+  const selectedCityData = cities.find((c) => c.name === selectedCity);
 
   return (
     <div className="p-4 space-y-4">
@@ -99,24 +121,38 @@ export default function ProfilePage() {
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-            <input
-              type="text"
-              placeholder="Şehir"
-              value={newAddress.city}
-              onChange={(e) =>
-                setNewAddress({ ...newAddress, city: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-            <input
-              type="text"
-              placeholder="İlçe"
+            
+            {/* İl Dropdown */}
+            <select
+              value={selectedCity}
+              onChange={(e) => handleCityChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            >
+              <option value="">İl Seçin</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+
+            {/* İlçe Dropdown */}
+            <select
               value={newAddress.district}
               onChange={(e) =>
                 setNewAddress({ ...newAddress, district: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+              disabled={!selectedCity}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white disabled:bg-gray-100 disabled:text-gray-400"
+            >
+              <option value="">{selectedCity ? "İlçe Seçin" : "Önce il seçin"}</option>
+              {selectedCityData?.districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+
             <textarea
               placeholder="Tam Adres"
               value={newAddress.fullAddress}
@@ -134,7 +170,11 @@ export default function ProfilePage() {
                 Kaydet
               </button>
               <button
-                onClick={() => setShowAddForm(false)}
+                onClick={() => {
+                  setShowAddForm(false);
+                  setSelectedCity("");
+                  setNewAddress({ title: "", fullAddress: "", city: "", district: "" });
+                }}
                 className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors"
               >
                 İptal
@@ -194,6 +234,67 @@ export default function ProfilePage() {
             <span>Acil Yol Yardım</span>
             <span>0850 123 45 68</span>
           </a>
+        </div>
+      </div>
+
+      {/* Belge Yükleme */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <Upload className="w-5 h-5 text-primary-600" />
+          <h2 className="font-semibold text-gray-900">Belge Yükle</h2>
+        </div>
+        <div className="space-y-3">
+          {/* Trafik Sigortası */}
+          <div className="border border-gray-200 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileCheck className="w-5 h-5 text-gray-500" />
+                <span className="text-sm font-medium">Trafik Sigortası</span>
+              </div>
+              {documents.sigorta && (
+                <span className="text-xs text-success-600 bg-success-50 px-2 py-1 rounded-full">
+                  Yüklendi
+                </span>
+              )}
+            </div>
+            <label className="mt-2 flex items-center justify-center w-full h-10 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-colors">
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                className="hidden"
+                onChange={(e) => handleFileUpload("sigorta", e.target.files?.[0] || null)}
+              />
+              <span className="text-sm text-gray-500">
+                {documents.sigorta ? documents.sigorta.name : "Dosya seçin"}
+              </span>
+            </label>
+          </div>
+
+          {/* Ruhsat */}
+          <div className="border border-gray-200 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileCheck className="w-5 h-5 text-gray-500" />
+                <span className="text-sm font-medium">Ruhsat</span>
+              </div>
+              {documents.ruhsat && (
+                <span className="text-xs text-success-600 bg-success-50 px-2 py-1 rounded-full">
+                  Yüklendi
+                </span>
+              )}
+            </div>
+            <label className="mt-2 flex items-center justify-center w-full h-10 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-colors">
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                className="hidden"
+                onChange={(e) => handleFileUpload("ruhsat", e.target.files?.[0] || null)}
+              />
+              <span className="text-sm text-gray-500">
+                {documents.ruhsat ? documents.ruhsat.name : "Dosya seçin"}
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 

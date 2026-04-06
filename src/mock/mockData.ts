@@ -211,6 +211,24 @@ export const regions = [
   "Diğer",
 ];
 
+export const cities = [
+  {
+    id: "istanbul",
+    name: "İstanbul",
+    districts: ["Adalar", "Ataşehir", "Beykoz", "Çekmeköy", "Kadıköy", "Kartal", "Maltepe", "Pendik", "Sancaktepe", "Sultanbeyli", "Şile", "Tuzla", "Ümraniye", "Üsküdar", "Arnavutköy", "Avcılar", "Bağcılar", "Bahçelievler", "Bakırköy", "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beylikdüzü", "Beyoğlu", "Büyükçekmece", "Çatalca", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih", "Gaziosmanpaşa", "Güngören", "Kağıthane", "Küçükçekmece", "Sarıyer", "Silivri", "Sultangazi", "Şişli", "Zeytinburnu"]
+  },
+  {
+    id: "ankara",
+    name: "Ankara",
+    districts: ["Altındağ", "Çankaya", "Etimesgut", "Keçiören", "Mamak", "Sincan", "Yenimahalle", "Akyurt", "Ayaş", "Bala", "Beypazarı", "Çamlıdere", "Çubuk", "Elmadağ", "Evren", "Gölbaşı", "Güdül", "Haymana", "Kahramankazan", "Kalecik", "Kızılcahamam", "Nallıhan", "Polatlı", "Pursaklar", "Şereflikoçhisar"]
+  },
+  {
+    id: "izmir",
+    name: "İzmir",
+    districts: ["Aliağa", "Balçova", "Bayındır", "Bayraklı", "Bergama", "Beydağ", "Bornova", "Buca", "Çeşme", "Çiğli", "Dikili", "Foça", "Gaziemir", "Güzelbahçe", "Karabağlar", "Karaburun", "Karşıyaka", "Kemalpaşa", "Kınık", "Kiraz", "Konak", "Menderes", "Menemen", "Narlıdere", "Ödemiş", "Seferihisar", "Selçuk", "Tire", "Torbalı", "Urla"]
+  }
+];
+
 export const requestTypes = [
   { value: "BAKIM", label: "Bakım" },
   { value: "HASAR_KAZA", label: "Hasar-Kaza" },
