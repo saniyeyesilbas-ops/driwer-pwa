@@ -8,11 +8,11 @@ import { Wrench, AlertTriangle, Fuel, CircleDollarSign, LayoutGrid } from "lucid
 type TabType = "all" | "maintenances" | "fines" | "fuels" | "damages";
 
 const tabs = [
-  { id: "all" as TabType, label: "Tumu", icon: LayoutGrid },
-  { id: "maintenances" as TabType, label: "Bakim", icon: Wrench },
+  { id: "all" as TabType, label: "Tümü", icon: LayoutGrid },
+  { id: "maintenances" as TabType, label: "Bakım", icon: Wrench },
   { id: "damages" as TabType, label: "Hasar", icon: AlertTriangle },
   { id: "fines" as TabType, label: "Ceza", icon: CircleDollarSign },
-  { id: "fuels" as TabType, label: "Yakit", icon: Fuel },
+  { id: "fuels" as TabType, label: "Yakıt", icon: Fuel },
 ];
 
 export default function HistoryPage() {
@@ -43,8 +43,6 @@ export default function HistoryPage() {
     if (activeTab === "all" || activeTab === "fuels") {
       total += currentData.fuels.reduce((sum, item) => sum + (item.amount || 0), 0);
     }
-    
-    // Hasar icin mock data yok, 0 olarak kalir
     
     return total;
   }, [currentData, activeTab]);
@@ -112,12 +110,12 @@ export default function HistoryPage() {
 
     if (activeTab === "damages") {
       items.push(
-        <p key="no-damage" className="text-gray-500 text-center py-8">Bu ay hasar kaydi yok.</p>
+        <p key="no-damage" className="text-gray-500 text-center py-8">Bu ay hasar kaydı yok.</p>
       );
     }
 
     if (items.length === 0) {
-      return <p className="text-gray-500 text-center py-8">Bu ay kayit yok.</p>;
+      return <p className="text-gray-500 text-center py-8">Bu ay kayıt yok.</p>;
     }
 
     return <div className="space-y-3">{items}</div>;
@@ -125,9 +123,9 @@ export default function HistoryPage() {
 
   return (
     <div className="p-4 space-y-4">
-      {/* Baslik ve Toplam Maliyet */}
+      {/* Başlık ve Toplam Maliyet */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">Gecmisim</h1>
+        <h1 className="text-xl font-bold text-gray-900">Geçmişim</h1>
         <div className="bg-primary-50 border border-primary-200 rounded-xl px-4 py-2">
           <p className="text-xs text-primary-600">Toplam Maliyet</p>
           <p className="text-lg font-bold text-primary-700">
